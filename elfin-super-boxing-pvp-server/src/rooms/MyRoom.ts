@@ -179,11 +179,11 @@ export class MyRoom extends Room<MyRoomState> {
       "userId": options?.player?.uid,
       "ticket_id": (client as any)?.ticket,
       "state": "queue",
-      "game_id": "FlappyHero",
+      "game_id": "elfinsuperboxingpvp",
       "reconnectToken": this.roomId + ":" + client?._reconnectionToken
     }
     const syncTicketPayload = await syncTicket(options?.player?.accessToken, JSON.stringify(syncTicketData));
-    const player = this.state.createPlayer(client.sessionId, options?.player, this.state.players.size, options?.player?.uid, "queue", options?.player?.walletId, (client as any)?.ticket, (client as any)?.passCred);
+    const player = this.state.createPlayer(client.sessionId, options?.player, this.state.players.size, options?.characterId, options?.player?.uid, "queue", options?.player?.walletId, (client as any)?.ticket, (client as any)?.passCred);
     console.log("this.state.players.size: ", this.state.players.size);
 
     const canStartGame = this.state.players.size == this.maxClients;

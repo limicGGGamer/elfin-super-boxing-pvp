@@ -12,6 +12,7 @@ export class Player extends Schema {
     @type("number") hp!: number;
     @type("number") score!: number;
     @type("number") playerId!: number;
+    @type("number") characterId!: number;
     @type("string") state: string;
     @type("string") userId: string;
     @type("string") walletId: string;    

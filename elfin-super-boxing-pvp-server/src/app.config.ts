@@ -6,6 +6,7 @@ import basicAuth from "express-basic-auth";
  * Import your Room files
  */
 import { MyRoom } from "./rooms/MyRoom";
+import { BattleRoom } from "./rooms/BattleRoom";
 
 export default config({
 
@@ -14,6 +15,7 @@ export default config({
          * Define your room handlers:
          */
         gameServer.define('queue', MyRoom);
+        gameServer.define('battleRoom', BattleRoom).filterBy(['password']);
 
     },
 

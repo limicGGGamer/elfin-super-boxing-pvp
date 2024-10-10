@@ -3,7 +3,7 @@ import { MyRoomState } from "./schema/MyRoomState";
 import { syncTicket } from "../thirdparties/DynamodbAPI";
 
 export class BattleRoom extends Room<MyRoomState> {
-    maxClients = 5;
+    maxClients = 3;
     startedAt = 0;
     remoteRoomId: string = "";
     isGameover = false;
@@ -15,9 +15,10 @@ export class BattleRoom extends Room<MyRoomState> {
         console.log("onCreate BattleRoom id: ", this.roomId);
 
         this.onMessage("*", async (client, type, message) => {
+            console.log("type: ",type,"    message:", message);
             switch (type) {
                 case "game-input":
-                    // console.log("game-input message:", message);
+                    console.log("game-input message:", message);
                     this.broadcast('game-event', { event: 'game-input', data: message });
                     break;
                 case "update-player":
@@ -70,8 +71,8 @@ export class BattleRoom extends Room<MyRoomState> {
                     this.broadcast('game-event', { event: 'player-ready', data: message });
                     break;
                 case "go-to-game":
-                    // console.log("go-to-game:", message);
-                    this.broadcast('game-event', { event: 'go-to-game', data: message.data });
+                    console.log("go-to-game:", message);
+                    this.broadcast('game-event', { event: 'go-to-game', data: message });
                     break;
                 case "ping":
                     // Respond with a "pong" message containing the same timestamp
@@ -222,6 +223,7 @@ export class BattleRoom extends Room<MyRoomState> {
         Object.entries(playerstate?.player).forEach(([sessionId, options], index) => {
             const _player = this.state.createPlayer((options as { sessionId: string })?.sessionId, options,
                 (options as { playerId: string })?.playerId,
+                (options as { characterId: string })?.characterId,
                 (options as { uid: string })?.uid, "battle",
                 (options as { walletId: string })?.walletId,
                 (options as { ticket: string })?.ticket,
