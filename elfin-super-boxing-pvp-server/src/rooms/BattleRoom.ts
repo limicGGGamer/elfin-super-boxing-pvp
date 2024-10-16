@@ -15,24 +15,27 @@ export class BattleRoom extends Room<MyRoomState> {
         console.log("onCreate BattleRoom id: ", this.roomId);
 
         this.onMessage("*", async (client, type, message) => {
-            console.log("type: ",type,"    message:", message);
+            // console.log("type: ",type,"    message:", message);
             switch (type) {
                 case "game-input":
-                    console.log("game-input message:", message);
+                    // console.log("game-input message:", message);
                     this.broadcast('game-event', { event: 'game-input', data: message });
                     break;
                 case "update-player":
                     // console.log("update-player message:", message);
 
-                    this.state.players.forEach((player) => {
-                        if (player.playerId == message.playerId) {
-                            player.posX = message.posX;
-                            player.posY = message.posY;
-                            player.angle = message.angle;
-                            player.hp = message.hp;
-                            player.score = message.score;
-                        }
-                    })
+                    try{
+                        this.state.players.forEach((player) => {
+                            if (player.playerId == message.playerId) {
+                                player.posX = parseInt(message?.posX);
+                                player.posY = parseInt(message?.posY);
+                                player.angle = parseInt(message?.angle);
+                                // player.hp = message.hp;
+                            }
+                        })
+                    }catch(error){
+                        console.log("update-player error:", error);
+                    }
 
                     break;
                 case "game-started":
@@ -43,18 +46,18 @@ export class BattleRoom extends Room<MyRoomState> {
                     this.state.players.forEach((player) => {
                         const p = {
                             playerId: player.playerId,
-                            shortWalletId: player.shortWalletId
+                            shortWalletId: player.shortWalletId,
+                            posX: player.posX,
+                            posY: player.posY,
+                            characterId: player.characterId,
+                            angle: player.angle
                         }
 
                         players.push(p);
                     })
+                    console.log("gameScene:", players);
 
                     this.broadcast('gameScene', { result: 1, data: { players: players } });
-                    try {
-                        await matchMaker.remoteRoomCall(this.remoteRoomId, "closeRoom", [{ roomId: this.roomId }]);
-                    } catch (error) {
-                        console.error("Error calling remote room:", error);
-                    }
                     break;
                 case "game-over":
                     // console.log("gameover:", message);
@@ -166,6 +169,13 @@ export class BattleRoom extends Room<MyRoomState> {
             return;
         this.isGameover = true;
 
+        try {
+            console.error("this.remoteRoomId:", this.remoteRoomId, "roomId: ",this.roomId);
+            await matchMaker.remoteRoomCall(this.remoteRoomId, "closeRoom", [{ roomId: this.roomId }]);
+        } catch (error) {
+            console.error("Error calling remote room:", error);
+        }
+
         const gameOverRoom = await matchMaker.createRoom("gameOver", {});
         console.log("Battle room:", this.roomId + " , GameOver Room:" + gameOverRoom?.roomId);
         const endedAt = Date.now();
@@ -231,6 +241,7 @@ export class BattleRoom extends Room<MyRoomState> {
 
 
             console.log(`(options as { playerId: string })?.playerId: ${(options as { playerId: string })?.playerId}`);
+            console.log(`_player.posY: ${_player.posY}`);
 
             this.broadcast("game-event", {
                 event: `set-player`, data: {
@@ -239,6 +250,7 @@ export class BattleRoom extends Room<MyRoomState> {
                 }
             });
         });
+
 
         return true;
     }

@@ -246,33 +246,33 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   async onLeave(client: Client, consented: boolean) {
-    this.state.players.get(client.sessionId).connected = false;
+    // this.state.players.get(client.sessionId).connected = false;
 
-    try {
-      if (consented) {
-        throw new Error("consented leave");
-      }
-      const reconnection = this.allowReconnection(client, "manual");
+    // try {
+    //   if (consented) {
+    //     throw new Error("consented leave");
+    //   }
+    //   const reconnection = this.allowReconnection(client, "manual");
 
-      // now it's time to `await` for the reconnection
-      await reconnection;
+    //   // now it's time to `await` for the reconnection
+    //   await reconnection;
 
-      // client returned! let's re-activate it.
-      this.state.players.get(client.sessionId).connected = true;
+    //   // client returned! let's re-activate it.
+    //   this.state.players.get(client.sessionId).connected = true;
 
-      const promise = await reconnection.promise
-      console.log("queue room reconnection token:", promise._reconnectionToken);
-      //sync ticket
+    //   const promise = await reconnection.promise
+    //   console.log("queue room reconnection token:", promise._reconnectionToken);
+    //   //sync ticket
 
-    } catch (e) {
+    // } catch (e) {
 
-      //console.log("error:",e);
+    //   //console.log("error:",e);
 
-      console.log(`Queue room ${this.roomId} reconnection has been rejected. remove the client...`);
-      // reconnection has been rejected. let's remove the client.
-      this.state.players.delete(client.sessionId);
-      this.unlock();
-    }
+    //   console.log(`Queue room ${this.roomId} reconnection has been rejected. remove the client...`);
+    //   // reconnection has been rejected. let's remove the client.
+    //   this.state.players.delete(client.sessionId);
+    //   this.unlock();
+    // }
   }
 
   onDispose() {
@@ -280,6 +280,13 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   closeRoom() {
+    // this.broadcast("game-event", {
+    //   state: "game-joined",
+    //   message: "Connecting to server"
+    // });
+    // setTimeout(() => {
+    //   this.disconnect();
+    // }, 5000);
     this.disconnect();
   }
 
