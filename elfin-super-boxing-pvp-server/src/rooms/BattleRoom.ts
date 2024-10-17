@@ -21,6 +21,10 @@ export class BattleRoom extends Room<MyRoomState> {
                     // console.log("game-input message:", message);
                     this.broadcast('game-event', { event: 'game-input', data: message });
                     break;
+                case "reduceHealth":
+                    // console.log("reduceHealth message:", message);
+                    this.broadcast('game-event', { event: 'reduceHealth', data: message });
+                    break;
                 case "update-player":
                     // console.log("update-player message:", message);
 
