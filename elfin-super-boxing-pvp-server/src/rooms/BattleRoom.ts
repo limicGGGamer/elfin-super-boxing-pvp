@@ -18,17 +18,25 @@ export class BattleRoom extends Room<MyRoomState> {
             // console.log("type: ",type,"    message:", message);
             switch (type) {
                 case "game-input":
-                    // console.log("game-input message:", message);
+                    console.log("game-input message:", message);
                     this.broadcast('game-event', { event: 'game-input', data: message });
                     break;
-                case "reduceHealth":
-                    // console.log("reduceHealth message:", message);
-                    this.broadcast('game-event', { event: 'reduceHealth', data: message });
+                // case "reduceHealth":
+                //     console.log("reduceHealth message:", message);
+                //     this.broadcast('game-event', { event: 'reduceHealth', data: message });
+                //     break;
+                case "checkAttack":
+                    console.log("checkAttack message:", message);
+                    this.broadcast('game-event', { event: 'checkAttack', data: message });
+                    break;
+                case "playAnimation":
+                    // console.log("playAnimation message:", message);
+                    this.broadcast('game-event', { event: 'playAnimation', data: message });
                     break;
                 case "update-player":
                     // console.log("update-player message:", message);
 
-                    try{
+                    try {
                         this.state.players.forEach((player) => {
                             if (player.playerId == message.playerId) {
                                 player.posX = parseInt(message?.posX);
@@ -37,7 +45,7 @@ export class BattleRoom extends Room<MyRoomState> {
                                 // player.hp = message.hp;
                             }
                         })
-                    }catch(error){
+                    } catch (error) {
                         console.log("update-player error:", error);
                     }
 
@@ -174,7 +182,7 @@ export class BattleRoom extends Room<MyRoomState> {
         this.isGameover = true;
 
         try {
-            console.error("this.remoteRoomId:", this.remoteRoomId, "roomId: ",this.roomId);
+            console.error("this.remoteRoomId:", this.remoteRoomId, "roomId: ", this.roomId);
             await matchMaker.remoteRoomCall(this.remoteRoomId, "closeRoom", [{ roomId: this.roomId }]);
         } catch (error) {
             console.error("Error calling remote room:", error);
